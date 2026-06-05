@@ -1,11 +1,11 @@
 package com.codewithnolan.chatchitflutter.services;
 
-import com.codewithnolan.chatchitflutter.dtos.LoginFormDto;
-import com.codewithnolan.chatchitflutter.dtos.RegisterFormDto;
-import com.codewithnolan.chatchitflutter.entities.User;
+import com.codewithnolan.chatchitflutter.dtos.user.LoginRequest;
+import com.codewithnolan.chatchitflutter.dtos.user.LoginResponse;
+import com.codewithnolan.chatchitflutter.dtos.user.RegisterRequest;
 
 public interface AuthService {
-    User login(LoginFormDto loginFormDto);
+    LoginResponse login(LoginRequest loginRequest);
 
-    String register(RegisterFormDto registerFormDto);
+    String register(RegisterRequest registerRequest);
 }

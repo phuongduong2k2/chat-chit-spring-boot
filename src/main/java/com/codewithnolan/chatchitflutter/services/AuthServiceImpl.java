@@ -1,14 +1,14 @@
 package com.codewithnolan.chatchitflutter.services;
 
-import com.codewithnolan.chatchitflutter.dtos.LoginFormDto;
-import com.codewithnolan.chatchitflutter.dtos.RegisterFormDto;
-import com.codewithnolan.chatchitflutter.dtos.RegisterFormDtoMapper;
+import com.codewithnolan.chatchitflutter.dtos.user.*;
 import com.codewithnolan.chatchitflutter.entities.User;
+import com.codewithnolan.chatchitflutter.exceptions.AuthException;
 import com.codewithnolan.chatchitflutter.repositories.UserRepository;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,28 +22,28 @@ public class AuthServiceImpl implements AuthService{
     @NonNull private PasswordEncoder passwordEncoder;
 
     @Override
-    public User login(LoginFormDto loginFormDto) {
-        Optional<User> user = userRepository.findByEmail(loginFormDto.getEmail());
+    public LoginResponse login(LoginRequest loginRequest) {
+        Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
         if (user.isEmpty()) {
             throw new EntityNotFoundException("User not found");
         }
-        boolean validPassword = verifyPassword(loginFormDto.getPassword(), user.get().getPassword());
+        boolean validPassword = verifyPassword(loginRequest.getPassword(), user.get().getPassword());
         if (!validPassword) {
-            throw new RuntimeException("Invalid password");
+            throw new AuthException("Invalid password", HttpStatus.UNAUTHORIZED);
         }
-        return user.get();
+        return UserMapper.toLoginResponse(user.get());
     }
 
     @Override
-    public String register(RegisterFormDto registerFormDto) {
-        Optional<User> optionalUser = userRepository.findByEmail(registerFormDto.getEmail());
+    public String register(RegisterRequest registerRequest) {
+        Optional<User> optionalUser = userRepository.findByEmail(registerRequest.getEmail());
         if (optionalUser.isPresent()) {
-            throw new EntityExistsException("An email already exist");
+            throw new AuthException("An email is already exist", HttpStatus.BAD_REQUEST);
         }
-        String hashedPassword = passwordEncoder.encode(registerFormDto.getPassword());
-        registerFormDto.setPassword(hashedPassword);
-        User newUser = RegisterFormDtoMapper.mapDtoToEntity(registerFormDto);
-        userRepository.save(newUser);
+        String hashedPassword = passwordEncoder.encode(registerRequest.getPassword());
+        registerRequest.setPassword(hashedPassword);
+        User user = UserMapper.fromRegisterRequest(registerRequest);
+        userRepository.save(user);
         return "Create account is success";
     }
 

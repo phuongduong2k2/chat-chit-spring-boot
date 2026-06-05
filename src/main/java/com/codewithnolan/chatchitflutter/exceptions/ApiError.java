@@ -11,7 +11,7 @@ public class ApiError {
     private String message;
     private int statusCode;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDateTime localDateTime;
 
     public ApiError(Builder builder) {
