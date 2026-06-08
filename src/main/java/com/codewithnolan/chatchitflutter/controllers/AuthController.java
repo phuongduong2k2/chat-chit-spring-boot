@@ -3,6 +3,7 @@ package com.codewithnolan.chatchitflutter.controllers;
 import com.codewithnolan.chatchitflutter.dtos.user.LoginRequest;
 import com.codewithnolan.chatchitflutter.dtos.user.LoginResponse;
 import com.codewithnolan.chatchitflutter.dtos.user.RegisterRequest;
+import com.codewithnolan.chatchitflutter.dtos.user.RegisterResponse;
 import com.codewithnolan.chatchitflutter.exceptions.ApiError;
 import com.codewithnolan.chatchitflutter.exceptions.AuthException;
 import com.codewithnolan.chatchitflutter.services.AuthService;
@@ -28,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         return new ResponseEntity<>(authService.register(registerRequest),HttpStatus.OK);
     }
 

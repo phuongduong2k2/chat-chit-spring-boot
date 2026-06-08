@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public String register(RegisterRequest registerRequest) {
+    public RegisterResponse register(RegisterRequest registerRequest) {
         Optional<User> optionalUser = userRepository.findByEmail(registerRequest.getEmail());
         if (optionalUser.isPresent()) {
             throw new AuthException("An email is already exist", HttpStatus.BAD_REQUEST);
@@ -44,7 +44,10 @@ public class AuthServiceImpl implements AuthService{
         registerRequest.setPassword(hashedPassword);
         User user = UserMapper.fromRegisterRequest(registerRequest);
         userRepository.save(user);
-        return "Create account is success";
+
+        RegisterResponse registerResponse = new RegisterResponse();
+        registerResponse.setMessage("Create account is success");
+        return registerResponse;
     }
 
     private boolean verifyPassword(String rawPassword, String storedHash) {

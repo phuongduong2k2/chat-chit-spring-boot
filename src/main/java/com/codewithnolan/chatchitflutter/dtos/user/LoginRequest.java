@@ -2,11 +2,9 @@ package com.codewithnolan.chatchitflutter.dtos.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class LoginRequest {
     @NotBlank(message = "email is required")
     @Email(message = "email is invalid")
