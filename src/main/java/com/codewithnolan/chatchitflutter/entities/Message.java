@@ -7,25 +7,25 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.UuidGenerator;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Setter
 @Getter
+@Setter
 @ToString
-@Entity(name = "users")
-public class User {
-
+@Entity(name = "messages")
+public class Message {
     @Id
     @GeneratedValue
     @UuidGenerator
     @Setter(AccessLevel.NONE)
     private UUID id;
 
-    private String email;
+    private String message;
 
-    @Column(unique = true)
-    private String username;
+    private LocalDateTime createAt;
 
-    private String password;
-    private String avatarName;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

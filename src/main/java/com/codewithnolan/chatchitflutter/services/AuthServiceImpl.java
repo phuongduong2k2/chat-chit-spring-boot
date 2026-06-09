@@ -1,10 +1,10 @@
 package com.codewithnolan.chatchitflutter.services;
 
+import com.codewithnolan.chatchitflutter.dtos.StatusResponse;
 import com.codewithnolan.chatchitflutter.dtos.user.*;
 import com.codewithnolan.chatchitflutter.entities.User;
 import com.codewithnolan.chatchitflutter.exceptions.AuthException;
 import com.codewithnolan.chatchitflutter.repositories.UserRepository;
-import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public RegisterResponse register(RegisterRequest registerRequest) {
+    public StatusResponse register(RegisterRequest registerRequest) {
         Optional<User> optionalUser = userRepository.findByEmail(registerRequest.getEmail());
         if (optionalUser.isPresent()) {
             throw new AuthException("An email is already exist", HttpStatus.BAD_REQUEST);
@@ -44,10 +44,7 @@ public class AuthServiceImpl implements AuthService{
         registerRequest.setPassword(hashedPassword);
         User user = UserMapper.fromRegisterRequest(registerRequest);
         userRepository.save(user);
-
-        RegisterResponse registerResponse = new RegisterResponse();
-        registerResponse.setMessage("Create account is success");
-        return registerResponse;
+        return new StatusResponse("Create account is success");
     }
 
     private boolean verifyPassword(String rawPassword, String storedHash) {

@@ -1,9 +1,9 @@
 package com.codewithnolan.chatchitflutter.controllers;
 
+import com.codewithnolan.chatchitflutter.dtos.StatusResponse;
 import com.codewithnolan.chatchitflutter.dtos.user.LoginRequest;
 import com.codewithnolan.chatchitflutter.dtos.user.LoginResponse;
 import com.codewithnolan.chatchitflutter.dtos.user.RegisterRequest;
-import com.codewithnolan.chatchitflutter.dtos.user.RegisterResponse;
 import com.codewithnolan.chatchitflutter.exceptions.ApiError;
 import com.codewithnolan.chatchitflutter.exceptions.AuthException;
 import com.codewithnolan.chatchitflutter.services.AuthService;
@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<StatusResponse> register(@Valid @RequestBody RegisterRequest registerRequest) {
         return new ResponseEntity<>(authService.register(registerRequest),HttpStatus.OK);
     }
 
@@ -40,6 +39,6 @@ public class AuthController {
                 .withMessage(ex.getMessage())
                 .withHttpStatus(ex.getHttpStatus())
                 .build();
-        return new ResponseEntity<>(apiError, HttpStatusCode.valueOf(apiError.getStatusCode()));
+        return new ResponseEntity<>(apiError, ex.getHttpStatus());
     }
 }

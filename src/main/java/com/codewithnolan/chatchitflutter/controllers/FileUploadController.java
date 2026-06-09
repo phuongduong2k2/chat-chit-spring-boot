@@ -25,7 +25,7 @@ public class FileUploadController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/")
+    @GetMapping
     public String listUploadedFiles(Model model) {
 
         model.addAttribute("files", storageService.loadAll().map(
@@ -59,7 +59,7 @@ public class FileUploadController {
                 .body(file);
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<FileResponse> handleFileUpload(@RequestParam("file") MultipartFile file,
                                                          RedirectAttributes redirectAttributes) {
 

@@ -7,7 +7,7 @@ public class UserMapper {
         UserDto userData = new UserDto();
         userData.setEmail(user.getEmail());
         userData.setUsername(user.getUsername());
-        userData.setAvatarUrl(user.getAvatarUrl());
+        userData.setAvatarName(user.getAvatarName());
 
         LoginResponse loginResponse = new LoginResponse();
         loginResponse.setUserData(userData);
@@ -20,7 +20,15 @@ public class UserMapper {
         user.setEmail(registerRequest.getEmail());
         user.setUsername(registerRequest.getUsername());
         user.setPassword(registerRequest.getPassword());
-        user.setAvatarUrl(registerRequest.getAvatarUrl());
+        user.setAvatarName(registerRequest.getAvatarUrl());
         return user;
+    }
+
+    public static UserDto toDto(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setAvatarName(user.getAvatarName());
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+        return userDto;
     }
 }
