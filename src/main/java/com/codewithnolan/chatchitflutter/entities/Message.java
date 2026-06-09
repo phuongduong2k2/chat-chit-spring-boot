@@ -23,7 +23,7 @@ public class Message {
 
     private String message;
 
-    private LocalDateTime createAt;
+    private String createAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

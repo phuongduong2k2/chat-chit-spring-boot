@@ -3,6 +3,7 @@ package com.codewithnolan.chatchitflutter.services;
 import com.codewithnolan.chatchitflutter.dtos.StatusResponse;
 import com.codewithnolan.chatchitflutter.dtos.message.MessageDto;
 import com.codewithnolan.chatchitflutter.dtos.message.MessageMapper;
+import com.codewithnolan.chatchitflutter.dtos.message.MessageRequest;
 import com.codewithnolan.chatchitflutter.dtos.message.MessageResponse;
 import com.codewithnolan.chatchitflutter.entities.Message;
 import com.codewithnolan.chatchitflutter.entities.User;
@@ -12,7 +13,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,16 +48,15 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public StatusResponse create(String message, String username) {
-        System.out.println(message + username);
+    public StatusResponse create(MessageRequest messageRequest, String username) {
         Optional<User> optionalUser = userService.getByUsername(username);
         if (optionalUser.isEmpty()) {
             throw new EntityNotFoundException("User Not Found");
         }
         Message newMessage = new Message();
-        newMessage.setMessage(message);
+        newMessage.setMessage(messageRequest.getMessage());
         newMessage.setUser(optionalUser.get());
-        newMessage.setCreateAt(LocalDateTime.now());
+        newMessage.setCreateAt(messageRequest.getCreatedAt());
         messageRepository.save(newMessage);
         return new StatusResponse("Message Created Success");
     }

@@ -6,23 +6,26 @@ import com.codewithnolan.chatchitflutter.dtos.message.MessageResponse;
 import com.codewithnolan.chatchitflutter.exceptions.ApiError;
 import com.codewithnolan.chatchitflutter.exceptions.MessageException;
 import com.codewithnolan.chatchitflutter.services.MessageService;
+import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
 @RestController()
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/api/v1/messages")
 public class MessageController {
     @NonNull private MessageService messageService;
 
     @PostMapping("/{email}")
-    public ResponseEntity<StatusResponse> createMessage(@RequestBody MessageRequest messageRequest, @PathVariable String email) {
-        return new ResponseEntity<>(messageService.create(messageRequest.getMessage(), email), HttpStatus.OK);
+    public ResponseEntity<StatusResponse> createMessage(@Valid @RequestBody MessageRequest messageRequest, @PathVariable String email) {
+        return new ResponseEntity<>(messageService.create(messageRequest, email), HttpStatus.OK);
     }
 
     @GetMapping

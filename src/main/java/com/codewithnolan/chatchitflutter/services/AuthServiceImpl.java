@@ -4,7 +4,6 @@ import com.codewithnolan.chatchitflutter.dtos.StatusResponse;
 import com.codewithnolan.chatchitflutter.dtos.user.*;
 import com.codewithnolan.chatchitflutter.entities.User;
 import com.codewithnolan.chatchitflutter.exceptions.AuthException;
-import com.codewithnolan.chatchitflutter.repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +17,12 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService{
-    @NonNull private UserRepository userRepository;
     @NonNull private PasswordEncoder passwordEncoder;
+    @NonNull private UserService userService;
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
-        Optional<User> user = userRepository.findByEmail(loginRequest.getEmail());
+        Optional<User> user = userService.getByEmail(loginRequest.getEmail());
         if (user.isEmpty()) {
             throw new EntityNotFoundException("User not found");
         }
@@ -36,14 +35,18 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public StatusResponse register(RegisterRequest registerRequest) {
-        Optional<User> optionalUser = userRepository.findByEmail(registerRequest.getEmail());
-        if (optionalUser.isPresent()) {
+        Optional<User> optionalUserEmail = userService.getByEmail(registerRequest.getEmail());
+        Optional<User> optionalUserUsername = userService.getByUsername(registerRequest.getUsername());
+        if (optionalUserEmail.isPresent()) {
             throw new AuthException("An email is already exist", HttpStatus.BAD_REQUEST);
+        }
+        if (optionalUserUsername.isPresent()) {
+            throw new AuthException("An username is already exist", HttpStatus.BAD_REQUEST);
         }
         String hashedPassword = passwordEncoder.encode(registerRequest.getPassword());
         registerRequest.setPassword(hashedPassword);
         User user = UserMapper.fromRegisterRequest(registerRequest);
-        userRepository.save(user);
+        userService.save(user);
         return new StatusResponse("Create account is success");
     }
 

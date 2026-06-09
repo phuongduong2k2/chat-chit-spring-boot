@@ -11,4 +11,6 @@ public interface UserService {
     Optional<User> getByUsername(String username);
 
     Optional<User> getByEmail(String email);
+
+    void save(User user);
 }
